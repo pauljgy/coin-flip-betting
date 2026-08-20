@@ -23,6 +23,6 @@ contract CounterTest is Test {
     }
 
     function test_string() public view {
-	assertEq(counter.bio(), "hello world!");
+        assertEq(counter.bio(), "hello world!");
     }
 }
