@@ -21,4 +21,8 @@ contract CounterTest is Test {
         counter.setNumber(x);
         assertEq(counter.number(), x);
     }
+
+    function test_string() public view {
+	assertEq(counter.bio(), "hello world!");
+    }
 }

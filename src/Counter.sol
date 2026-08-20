@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 contract Counter {
     uint256 public number;
+    string public bio = "hello world!";
 
     function setNumber(uint256 newNumber) public {
         number = newNumber;
@@ -12,3 +13,4 @@ contract Counter {
         number++;
     }
 }
+
