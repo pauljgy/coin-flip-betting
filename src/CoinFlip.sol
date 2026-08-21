@@ -10,9 +10,16 @@ pragma solidity ^0.8.19;
 ///      involving real money at scale — use Chainlink VRF or similar for
 ///      production-grade randomness.
 contract CoinFlip {
-
-    enum Choice { None, Heads, Tails }
-    enum Status { Open, Resolved, Cancelled }
+    enum Choice {
+        None,
+        Heads,
+        Tails
+    }
+    enum Status {
+        Open,
+        Resolved,
+        Cancelled
+    }
 
     struct Bet {
         address payable creator;
@@ -74,7 +81,7 @@ contract CoinFlip {
         bet.status = Status.Cancelled;
         emit BetCancelled(_betId);
 
-        (bool success, ) = bet.creator.call{value: bet.amount}("");
+        (bool success,) = bet.creator.call{value: bet.amount}("");
         require(success, "Refund transfer failed");
     }
 
@@ -84,16 +91,12 @@ contract CoinFlip {
         Bet storage bet = bets[_betId];
 
         bool isHeads = uint256(
-            keccak256(
-                abi.encodePacked(
-                    blockhash(block.number - 1),
-                    block.timestamp,
-                    bet.creator,
-                    bet.challenger,
-                    _betId
-                )
-            )
-        ) % 2 == 0;
+                    keccak256(
+                        abi.encodePacked(
+                            blockhash(block.number - 1), block.timestamp, bet.creator, bet.challenger, _betId
+                        )
+                    )
+                ) % 2 == 0;
 
         Choice result = isHeads ? Choice.Heads : Choice.Tails;
         address payable winner = (result == bet.creatorChoice) ? bet.creator : bet.challenger;
@@ -103,19 +106,23 @@ contract CoinFlip {
 
         emit BetResolved(_betId, winner, isHeads);
 
-        (bool success, ) = winner.call{value: bet.amount * 2}("");
+        (bool success,) = winner.call{value: bet.amount * 2}("");
         require(success, "Payout transfer failed");
     }
 
     /// @notice Helper to read a bet's full details.
-    function getBet(uint256 _betId) external view returns (
-        address creator,
-        address challenger,
-        uint256 amount,
-        Choice creatorChoice,
-        Status status,
-        address winner
-    ) {
+    function getBet(uint256 _betId)
+        external
+        view
+        returns (
+            address creator,
+            address challenger,
+            uint256 amount,
+            Choice creatorChoice,
+            Status status,
+            address winner
+        )
+    {
         Bet storage bet = bets[_betId];
         return (bet.creator, bet.challenger, bet.amount, bet.creatorChoice, bet.status, bet.winner);
     }
